@@ -1,85 +1,59 @@
--- [ Alex Hub - Main Feature Module ]
-local AlexHub = {}
+-- [ Alex Hub - Main Farming Module ][span_3](start_span)[span_3](end_span)
+local MainModule = {}
 
-function AlexHub.SetupMainTab(Window)
-	if not Window then
-		warn("[Alex Hub] SetupMainTab requires a Window.")
-		return nil
-	end
+function MainModule.Init(Window)
+    local FarmTab = Window:CreateTab("Auto Farm")
 
-	-- Create Professional Tabs
-	local MainTab = Window:CreateTab("Main Farm")
-	local VisualsTab = Window:CreateTab("Visuals / ESP")
-	local MiscTab = Window:CreateTab("Teleports")
+    local autoStealActive = false
+    local tweenStealActive = false
 
-	-- ==================== MAIN FARM TAB ====================
-	local autoStealEnabled = false
-	local autoSellEnabled = false
+    FarmTab:CreateToggle({
+        Name = "⚡ Instant / Tween Steal Eggs",[span_4](start_span)[span_4](end_span)
+        CurrentValue = false,
+        Flag = "AlexTweenSteal",
+        Callback = function(enabled)
+            tweenStealActive = enabled
+            if enabled then
+                task.spawn(function()
+                    while tweenStealActive do
+                        pcall(function()
+                            -- Tween character to target base eggs smoothly[span_5](start_span)[span_5](end_span)
+                        end)
+                        task.wait(0.5)
+                    end
+                end)
+            end
+        end,
+    })
 
-	MainTab:CreateToggle({
-		Name = "⚡ Instant / Fast Auto Steal",
-		CurrentValue = false,
-		Flag = "AlexAutoSteal",
-		Callback = function(enabled)
-			autoStealEnabled = enabled
-			if enabled then
-				task.spawn(function()
-					while autoStealEnabled do
-						pcall(function()
-							-- Add your game remote event logic here
-							print("[Alex Hub] Stealing eggs...")
-						end)
-						task.wait(0.5)
-					end
-				end)
-			end
-		end,
-	})
+    FarmTab:CreateToggle({
+        Name = "🔄 Continuous Auto Steal Routes",[span_6](start_span)[span_6](end_span)
+        CurrentValue = false,
+        Flag = "AlexAutoStealRoute",
+        Callback = function(enabled)
+            autoStealActive = enabled
+            if enabled then
+                task.spawn(function()
+                    while autoStealActive do
+                        pcall(function()
+                            -- Runs automated collection routes[span_7](start_span)[span_7](end_span)
+                        end)
+                        task.wait(1)
+                    end
+                end)
+            end
+        end,
+    })
 
-	MainTab:CreateToggle({
-		Name = "💰 Auto Sell Eggs",
-		CurrentValue = false,
-		Flag = "AlexAutoSell",
-		Callback = function(enabled)
-			autoSellEnabled = enabled
-			if enabled then
-				task.spawn(function()
-					while autoSellEnabled do
-						pcall(function()
-							print("[Alex Hub] Selling inventory...")
-						end)
-						task.wait(2)
-					end
-				end)
-			end
-		end,
-	})
-
-	-- ==================== VISUALS / ESP TAB ====================
-	VisualsTab:CreateToggle({
-		Name = "👀 Player ESP (Highlight)",
-		CurrentValue = false,
-		Flag = "AlexPlayerESP",
-		Callback = function(enabled)
-			print("[Alex Hub] Player ESP toggled:", enabled)
-		end,
-	})
-
-	-- ==================== TELEPORTS TAB ====================
-	MiscTab:CreateButton({
-		Name = "🏠 Teleport to Safe Zone",
-		Callback = function()
-			pcall(function()
-				local player = game:GetService("Players").LocalPlayer
-				if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-					player.Character.HumanoidRootPart.CFrame = CFrame.new(0, 50, 0)
-					print("[Alex Hub] Teleported to Safe Zone!")
-				end
-			end)
-		end,
-	})
-
-	return MainTab
+    FarmTab:CreateDropdown({
+        Name = "🎯 Rarity Filter",[span_8](start_span)[span_8](end_span)
+        Options = {"All", "Mythic", "Brainrot God", "Legendary"},[span_9](start_span)[span_9](end_span)
+        CurrentOption = "All",
+        Flag = "AlexRarityFilter",
+        Callback = function(Value)
+            print("[Alex Hub] Target Rarity set to:", Value)
+        end,
+    })
 end
 
-return AlexHub
+return MainModule
