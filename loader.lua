@@ -1,44 +1,25 @@
--- [ Alex Hub - Loader Script ]
-local AlexHub = {}
+-- [ Alex Hub - Loader ]
+local OrionLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/jensonxr/Orion/main/source'))()
 
--- Load UI Library (Orion Library)
-local OrionLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/jensonhirst/Orion/main/source'))()
-
-if not OrionLib then
-    warn("[Alex Hub]: Failed to load UI Library.")
-    return
-end
-
--- Create the Window
+-- Create the main window UI
 local Window = OrionLib:MakeWindow({
-    Name = "Alex Hub | Steal an Egg",
-    HidePremium = false,
-    SaveConfig = true,
-    ConfigFolder = "AlexHubConfig"
+	Name = "Alex Hub | Steal an Egg",
+	HidePremium = false,
+	SaveConfig = true,
+	ConfigFolder = "AlexHubConfig"
 })
 
--- Notification on startup
-OrionLib:MakeNotification({
-    Title = "Alex Hub Loaded!",
-    Content = "Successfully initialized Steal an Egg script.",
-    Image = "rbxassetid://4483345998",
-    Time = 5
-})
-
--- Load your Main Tab code module from GitHub
--- REPLACE THE LINK BELOW WITH YOUR maintab.lua RAW LINK:
-local success, MainModule = pcall(function()
-    return loadstring(game:HttpGet("https://github.com/Alex-thecontentcreator/Alex-hub/blob/main/maintab.lua"))()
+-- Load the features from your maintab.lua file safely
+local success, AlexHubModule = pcall(function()
+	return loadstring(game:HttpGet("https://raw.githubusercontent.com/Alex-thecontentcreator/Alex-hub/refs/heads/main/maintab.lua"))()
 end)
 
-if success and MainModule and type(MainModule.SetupMainTab) == "function" then
-    -- Pass the window into your module function
-    MainModule.SetupMainTab(Window)
+if success and AlexHubModule and AlexHubModule.SetupMainTab then
+	AlexHubModule.SetupMainTab(Window)
+	print("[Alex Hub] Successfully loaded all tabs!")
 else
-    warn("[Alex Hub]: Failed to load MainTab module: " .. tostring(MainModule))
+	warn("[Alex Hub] Failed to load maintab.lua module!")
 end
 
--- Initialize the UI
+-- Initialize the Orion UI Library
 OrionLib:Init()
-
-return AlexHub
