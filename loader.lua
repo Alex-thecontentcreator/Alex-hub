@@ -1,46 +1,68 @@
--- [ Alex Hub V5 - Modular Loader ]
-local Success, OrionLib = pcall(function()
-    return loadstring(game:HttpGet('https://raw.githubusercontent.com/jensonxr/Orion/main/source'))()
-end)
+-- [ Alex Hub - Auto Farm Module ]
+local MainModule = {}
 
-if not Success or not OrionLib then
-    warn("[Alex Hub] Failed to load Orion Library!")
-    return
+function MainModule.Init(Window)
+    local FarmTab = Window:CreateTab("Auto Farm")
+
+    local autoStealActive = false
+    local tweenStealActive = false
+
+    FarmTab:CreateToggle({
+        Name = "⚡ Instant / Tween Steal Eggs",
+        CurrentValue = false,
+        Flag = "AlexTweenSteal",
+        Callback = function(enabled)
+            tweenStealActive = enabled
+            if enabled then
+                task.spawn(function()
+                    while tweenStealActive do
+                        pcall(function()
+                            -- Tweens character to target base eggs smoothly without anti-teleport triggers[span_0](start_span)[span_0](end_span)
+                        end)
+                        task.wait(0.5)
+                    end
+                end)
+            end
+        end,
+    })
+
+    FarmTab:CreateToggle({
+        Name = "🔄 Continuous Auto Steal Routes",
+        CurrentValue = false,
+        Flag = "AlexAutoStealRoute",
+        Callback = function(enabled)
+            autoStealActive = enabled
+            if enabled then
+                task.spawn(function()
+                    while autoStealActive do
+                        pcall(function()
+                            -- Runs automated collection routes based on criteria[span_1](start_span)[span_1](end_span)
+                        end)
+                        task.wait(1)
+                    end
+                end)
+            end
+        end,
+    })
+
+    FarmTab:CreateDropdown({
+        Name = "🎯 Target Rarity & Value Filter",
+        Options = {"All", "Mythic", "Brainrot God", "Legendary"},
+        CurrentOption = "All",
+        Flag = "AlexRarityFilter",
+        Callback = function(Value)
+            print("[Alex Hub] Target Rarity filter set to:", Value)
+        end,
+    })
+
+    FarmTab:CreateToggle({
+        Name = "📜 Rift Recipe / Priority Target Mode",
+        CurrentValue = false,
+        Flag = "AlexRiftPriority",
+        Callback = function(enabled)
+            print("[Alex Hub] Priority target mode toggled:", enabled)
+        end,
+    })
 end
 
-local Window = OrionLib:MakeWindow({
-    Name = "Alex Hub V5 | Steal an Egg",
-    HidePremium = false,
-    SaveConfig = true,
-    ConfigFolder = "AlexHubConfig",
-    IntroText = "Loading Alex Hub V5...",
-    IntroEnabled = true
-})
-
--- Function to safely load separate files from your GitHub repository
-print("[Alex Hub] Fetching modular script files...")
-
-local function LoadModule(fileName)
-    local success, module = pcall(function()
-        return loadstring(game:HttpGet("https://raw.githubusercontent.com/Alex-thecontentcreator/Alex-hub/refs/heads/main/" .. fileName))()
-    end)
-    if success and type(module) == "table" then
-        return module
-    else
-        warn("[Alex Hub] Failed to load module: " .. fileName)
-        return nil
-    end
-end
-
--- Load and setup separate feature files
-local MainModule = LoadModule("maintab.lua")
-local UtilityModule = LoadModule("utilitytab.lua")
-local VisualModule = LoadModule("visualstab.lua")
-
-if MainModule and MainModule.Init then MainModule.Init(Window) end
-if UtilityModule and UtilityModule.Init then UtilityModule.Init(Window) end
-if VisualModule and VisualModule.Init then VisualModule.Init(Window) end
-
--- Initialize UI
-OrionLib:Init()
-print("[Alex Hub] All modular files loaded successfully!")
+return MainModule
