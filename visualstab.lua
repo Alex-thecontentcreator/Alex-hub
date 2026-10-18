@@ -1,11 +1,11 @@
--- [ Alex Hub - Visuals & ESP Module ][span_16](start_span)[span_16](end_span)
+-- [ Alex Hub - Visuals & ESP Module ]
 local VisualModule = {}
 
 function VisualModule.Init(Window)
     local VisualTab = Window:CreateTab("Visuals & ESP")
 
     VisualTab:CreateToggle({
-        Name = "🥚 Egg ESP (Names, Values, Rarities)",[span_17](start_span)[span_17](end_span)
+        Name = "🥚 Egg ESP (Names, Values, Rarities)",
         CurrentValue = false,
         Flag = "AlexEggESP",
         Callback = function(enabled)
@@ -14,7 +14,7 @@ function VisualModule.Init(Window)
     })
 
     VisualTab:CreateToggle({
-        Name = "👀 Player & Target Base ESP",[span_18](start_span)[span_18](end_span)
+        Name = "👀 Player & Target Base ESP",
         CurrentValue = false,
         Flag = "AlexPlayerESP",
         Callback = function(enabled)
