@@ -1,11 +1,11 @@
--- [ Alex Hub - Predictors & Crafting Module ][span_11](start_span)[span_11](end_span)
+-- [ Alex Hub - Predictors & Crafting Module ]
 local UtilityModule = {}
 
 function UtilityModule.Init(Window)
     local UtilityTab = Window:CreateTab("Predictors & Craft")
 
     UtilityTab:CreateToggle({
-        Name = "🔮 Egg & Hatch Predictor",[span_12](start_span)[span_12](end_span)
+        Name = "🔮 Egg & Hatch Predictor",
         CurrentValue = false,
         Flag = "AlexEggPredictor",
         Callback = function(enabled)
@@ -14,16 +14,34 @@ function UtilityModule.Init(Window)
     })
 
     UtilityTab:CreateToggle({
-        Name = "⚙️ Auto Fuse & Hatch Machine",[span_13](start_span)[span_13](end_span)
+        Name = "🧪 Rift & Fuse Outcome Predictor",
         CurrentValue = false,
-        Flag = "AlexAutoFuse",
+        Flag = "AlexFusePredictor",
         Callback = function(enabled)
-            print("[Alex Hub] Auto Fuse toggled:", enabled)
+            print("[Alex Hub] Fuse Predictor toggled:", enabled)
         end,
     })
 
     UtilityTab:CreateToggle({
-        Name = "💰 Auto Sell Unwanted Pets/Eggs",[span_14](start_span)[span_14](end_span)
+        Name = "📦 Auto Place & Hatch Stolen Eggs",
+        CurrentValue = false,
+        Flag = "AlexAutoHatch",
+        Callback = function(enabled)
+            print("[Alex Hub] Auto Hatch toggled:", enabled)
+        end,
+    })
+
+    UtilityTab:CreateToggle({
+        Name = "⚙️ Auto Fuse Machine",
+        CurrentValue = false,
+        Flag = "AlexAutoFuse",
+        Callback = function(enabled)
+            print("[Alex Hub] Auto Fuse Machine toggled:", enabled)
+        end,
+    })
+
+    UtilityTab:CreateToggle({
+        Name = "💰 Auto Sell Unwanted Pets/Eggs",
         CurrentValue = false,
         Flag = "AlexAutoSell",
         Callback = function(enabled)
