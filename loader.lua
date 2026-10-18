@@ -1,4 +1,4 @@
--- [ Alex Hub - Ultra Fast & Smooth All-In-One Script ]
+-- [ Alex Hub V5 - Modular Loader ]
 local Success, OrionLib = pcall(function()
     return loadstring(game:HttpGet('https://raw.githubusercontent.com/jensonxr/Orion/main/source'))()
 end)
@@ -9,97 +9,38 @@ if not Success or not OrionLib then
 end
 
 local Window = OrionLib:MakeWindow({
-    Name = "Alex Hub | Steal an Egg",
+    Name = "Alex Hub V5 | Steal an Egg",
     HidePremium = false,
     SaveConfig = true,
     ConfigFolder = "AlexHubConfig",
-    IntroText = "Alex Hub Loading...",
+    IntroText = "Loading Alex Hub V5...",
     IntroEnabled = true
 })
 
--- ==================== TABS ====================
-local MainTab = Window:CreateTab("Main Farm")
-local VisualsTab = Window:CreateTab("Visuals / ESP")
-local MiscTab = Window:CreateTab("Teleports")
+-- Function to safely load separate files from your GitHub repository
+print("[Alex Hub] Fetching modular script files...")
 
--- ==================== MAIN FARM TAB ====================
-local autoStealEnabled = false
-local autoSellEnabled = false
+local function LoadModule(fileName)
+    local success, module = pcall(function()
+        return loadstring(game:HttpGet("https://raw.githubusercontent.com/Alex-thecontentcreator/Alex-hub/refs/heads/main/" .. fileName))()
+    end)
+    if success and type(module) == "table" then
+        return module
+    else
+        warn("[Alex Hub] Failed to load module: " .. fileName)
+        return nil
+    end
+end
 
-MainTab:CreateToggle({
-    Name = "⚡ Instant / Fast Auto Steal",
-    CurrentValue = false,
-    Flag = "AlexAutoSteal",
-    Callback = function(enabled)
-        autoStealEnabled = enabled
-        if enabled then
-            task.spawn(function()
-                while autoStealEnabled do
-                    pcall(function()
-                        -- Add your game remote/farming function here
-                    end)
-                    task.wait(0.3) -- Fast and optimized delay to prevent mobile crashes
-                end
-            end)
-        end
-    end,
-})
+-- Load and setup separate feature files
+local MainModule = LoadModule("maintab.lua")
+local UtilityModule = LoadModule("utilitytab.lua")
+local VisualModule = LoadModule("visualstab.lua")
 
-MainTab:CreateToggle({
-    Name = "💰 Auto Sell Eggs",
-    CurrentValue = false,
-    Flag = "AlexAutoSell",
-    Callback = function(enabled)
-        autoSellEnabled = enabled
-        if enabled then
-            task.spawn(function()
-                while autoSellEnabled do
-                    pcall(function()
-                        -- Add your sell logic here
-                    end)
-                    task.wait(1.5)
-                end
-            end)
-        end
-    end,
-})
+if MainModule and MainModule.Init then MainModule.Init(Window) end
+if UtilityModule and UtilityModule.Init then UtilityModule.Init(Window) end
+if VisualModule and VisualModule.Init then VisualModule.Init(Window) end
 
--- ==================== VISUALS / ESP TAB ====================
-VisualsTab:CreateToggle({
-    Name = "👀 Player ESP (Highlight)",
-    CurrentValue = false,
-    Flag = "AlexPlayerESP",
-    Callback = function(enabled)
-        pcall(function()
-            for _, player in ipairs(game:GetService("Players"):GetPlayers()) do
-                if player ~= game.Players.LocalPlayer and player.Character then
-                    local highlight = player.Character:FindFirstChild("AlexESP")
-                    if enabled and not highlight then
-                        local hl = Instance.new("Highlight")
-                        hl.Name = "AlexESP"
-                        hl.FillColor = Color3.fromRGB(170, 0, 255) -- Purple ESP
-                        hl.Parent = player.Character
-                    elseif not enabled and highlight then
-                        highlight:Destroy()
-                    end
-                end
-            end
-        end)
-    end,
-})
-
--- ==================== TELEPORTS TAB ====================
-MiscTab:CreateButton({
-    Name = "🏠 Teleport to Safe Zone",
-    Callback = function()
-        pcall(function()
-            local player = game:GetService("Players").LocalPlayer
-            if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
-                player.Character.HumanoidRootPart.CFrame = CFrame.new(0, 50, 0)
-            end
-        end)
-    end,
-})
-
--- Initialize UI cleanly
+-- Initialize UI
 OrionLib:Init()
+print("[Alex Hub] All modular files loaded successfully!")
