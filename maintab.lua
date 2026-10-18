@@ -1,44 +1,85 @@
--- [ Alex Hub - Loader Script ]
+-- [ Alex Hub - Main Feature Module ]
 local AlexHub = {}
 
--- Load UI Library (Orion Library)
-local OrionLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/jensonhirst/Orion/main/source'))()
+function AlexHub.SetupMainTab(Window)
+	if not Window then
+		warn("[Alex Hub] SetupMainTab requires a Window.")
+		return nil
+	end
 
-if not OrionLib then
-    warn("[Alex Hub]: Failed to load UI Library.")
-    return
+	-- Create Professional Tabs
+	local MainTab = Window:CreateTab("Main Farm")
+	local VisualsTab = Window:CreateTab("Visuals / ESP")
+	local MiscTab = Window:CreateTab("Teleports")
+
+	-- ==================== MAIN FARM TAB ====================
+	local autoStealEnabled = false
+	local autoSellEnabled = false
+
+	MainTab:CreateToggle({
+		Name = "⚡ Instant / Fast Auto Steal",
+		CurrentValue = false,
+		Flag = "AlexAutoSteal",
+		Callback = function(enabled)
+			autoStealEnabled = enabled
+			if enabled then
+				task.spawn(function()
+					while autoStealEnabled do
+						pcall(function()
+							-- Add your game remote event logic here
+							print("[Alex Hub] Stealing eggs...")
+						end)
+						task.wait(0.5)
+					end
+				end)
+			end
+		end,
+	})
+
+	MainTab:CreateToggle({
+		Name = "💰 Auto Sell Eggs",
+		CurrentValue = false,
+		Flag = "AlexAutoSell",
+		Callback = function(enabled)
+			autoSellEnabled = enabled
+			if enabled then
+				task.spawn(function()
+					while autoSellEnabled do
+						pcall(function()
+							print("[Alex Hub] Selling inventory...")
+						end)
+						task.wait(2)
+					end
+				end)
+			end
+		end,
+	})
+
+	-- ==================== VISUALS / ESP TAB ====================
+	VisualsTab:CreateToggle({
+		Name = "👀 Player ESP (Highlight)",
+		CurrentValue = false,
+		Flag = "AlexPlayerESP",
+		Callback = function(enabled)
+			print("[Alex Hub] Player ESP toggled:", enabled)
+		end,
+	})
+
+	-- ==================== TELEPORTS TAB ====================
+	MiscTab:CreateButton({
+		Name = "🏠 Teleport to Safe Zone",
+		Callback = function()
+			pcall(function()
+				local player = game:GetService("Players").LocalPlayer
+				if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+					player.Character.HumanoidRootPart.CFrame = CFrame.new(0, 50, 0)
+					print("[Alex Hub] Teleported to Safe Zone!")
+				end
+			end)
+		end,
+	})
+
+	return MainTab
 end
-
--- Create the Window
-local Window = OrionLib:MakeWindow({
-    Name = "Alex Hub | Steal an Egg",
-    HidePremium = false,
-    SaveConfig = true,
-    ConfigFolder = "AlexHubConfig"
-})
-
--- Notification on startup
-OrionLib:MakeNotification({
-    Title = "Alex Hub Loaded!",
-    Content = "Successfully initialized Steal an Egg script.",
-    Image = "rbxassetid://4483345998",
-    Time = 5
-})
-
--- Load your Main Tab code module from GitHub
--- REPLACE THE LINK BELOW WITH YOUR EXACT maintab.lua RAW LINK!
-local success, MainModule = pcall(function()
-    return loadstring(game:HttpGet("YOUR_GITHUB_RAW_LINK_FOR_MAINTAB.lua"))()
-end)
-
-if success and MainModule and type(MainModule.SetupMainTab) == "function" then
-    -- Pass the window into your module function
-    MainModule.SetupMainTab(Window)
-else
-    warn("[Alex Hub]: Failed to load MainTab module: " .. tostring(MainModule))
-end
-
--- Initialize the UI
-OrionLib:Init()
 
 return AlexHub
